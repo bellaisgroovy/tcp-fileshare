@@ -35,6 +35,19 @@ def get_request(filename):
     return packet
 
 
+def list_request(filename):
+    request_type = RequestType.LIST.value
+
+    size = 40 + len(request_type)
+    try:
+        size = size.to_bytes(40)
+    except OverflowError:
+        print('max packet size is ~136GB')
+
+    packet = size + request_type
+    return packet
+
+
 def fill_string_packet(string, max_size_bytes):
     return string.encode() + bytes(max_size_bytes - len(string.encode()))
 
