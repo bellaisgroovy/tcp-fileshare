@@ -20,6 +20,21 @@ def put_request(filename):
     return packet
 
 
+def get_request(filename):
+    request_type = RequestType.GET.value
+
+    name_packet = fill_string_packet(filename, max_size_bytes=1020)
+
+    size = 40 + len(request_type) + len(name_packet)
+    try:
+        size = size.to_bytes(40)
+    except OverflowError:
+        print('max packet size is ~136GB')
+
+    packet = size + request_type + name_packet
+    return packet
+
+
 def fill_string_packet(string, max_size_bytes):
     return string.encode() + bytes(max_size_bytes - len(string.encode()))
 
