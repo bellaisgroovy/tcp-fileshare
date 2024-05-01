@@ -6,9 +6,9 @@ two = 2
 
 
 class RequestType(Enum):
-    PUT = zero.to_bytes()
-    GET = one.to_bytes()
-    LIST = two.to_bytes()
+    PUT = zero.to_bytes(1, 'big')
+    GET = one.to_bytes(1, 'big')
+    LIST = two.to_bytes(1, 'big')
 
     @staticmethod
     def determine_request_type(request_bytes):
@@ -36,6 +36,6 @@ def put_request(filename):
 def fill_string_packet(string, max_size_bytes):
     return string.encode() + bytes(max_size_bytes - len(string.encode()))
 
-
+import os
 def get_payload(filename):
-    return open(filename, 'rb').read()
+    return open(os.path.join('server_dir',filename), 'rb').read()

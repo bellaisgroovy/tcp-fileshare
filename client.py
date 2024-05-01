@@ -1,6 +1,7 @@
 import socket
 import sys
 from utils import RequestType, put_request, fill_string_packet, get_payload
+import os
 
 
 def receive_put_packet(socket):
@@ -37,9 +38,6 @@ def determine_request_type(request_bytes):
         return RequestType.LIST
 
 
-
-
-
 def get_request(filename):
     request_type = RequestType.GET.value
 
@@ -47,11 +45,11 @@ def get_request(filename):
 
     size = 40 + len(request_type) + len(name_packet)
     try:
-        size = size.to_bytes(40)
+        size = size.to_bytes(40, 'big')
     except OverflowError:
         print('max packet size is ~136GB')
 
-    packet = size + request_type + name_packet
+    packet = request_type + name_packet
     return packet
 
 
@@ -75,6 +73,7 @@ srv_addr = (sys.argv[1], int(sys.argv[2]))
 
 try:
     cli_sock.connect(srv_addr)
+    print('connected')
 except socket.gaierror:
     print('cant reach address specified')
     exit(1)
@@ -84,17 +83,21 @@ if request_type == 'list':
     request = list_request()
     cli_sock.sendall(request)
 elif request_type == 'get':
+    print('get start')
     # send get request
     path = sys.argv[4]
     request = get_request(path)
     cli_sock.sendall(request)
+    print('get sent')
 
     # receive put packet
     packet = receive_put_packet(cli_sock)
+    print('packet received')
 
     # write payload to file
-    with open(path, 'wb') as file:
+    with open(os.path.join('client_dir', path), 'wb') as file:
         file.write(packet['payload'])
+    print('written')
 elif request_type == 'put':
     path = sys.argv[4]
     request = put_request(path)
