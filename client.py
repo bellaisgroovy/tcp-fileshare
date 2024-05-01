@@ -19,13 +19,14 @@ def receive_put_packet(socket):
         payload += data
         bytes_read += len(data)
     packet = {
-        'size' : size,
-        'request_type' : request_type,
-        'filename' : filename,
-        'payload' : payload
+        'size': size,
+        'request_type': request_type,
+        'filename': filename,
+        'payload': payload
     }
 
     return packet
+
 
 def determine_request_type(request_bytes):
     if request_bytes == RequestType.PUT.value:
@@ -35,20 +36,17 @@ def determine_request_type(request_bytes):
     if request_bytes == RequestType.LIST.value:
         return RequestType.LIST
 
+
 def put_request(filename):
     request_type = RequestType.PUT.value
 
+    name_size_bytes = len(filename).to_bytes(2, 'big')
     name_packet = fill_string_packet(filename, max_size_bytes=1020)
 
     payload = get_payload(filename)
+    payload_size_bytes = len(payload).to_bytes(40, 'big')  # TODO validation
 
-    size = 40 + len(request_type) + len(name_packet) + len(payload)
-    try:
-        size = size.to_bytes(40)
-    except OverflowError:
-        print('max packet size is ~136GB')
-
-    packet = size + request_type + name_packet + payload
+    packet = request_type + name_size_bytes + name_packet + payload_size_bytes + payload
     return packet
 
 
