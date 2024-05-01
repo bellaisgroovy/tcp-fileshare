@@ -35,7 +35,7 @@ def get_request(filename):
     return packet
 
 
-def list_request(filename):
+def list_request():
     request_type = RequestType.LIST.value
 
     size = 40 + len(request_type)
@@ -56,9 +56,9 @@ def get_payload(filename):
     return open(filename, 'rb').read()
 
 
-cli_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# main
 
-# The server's address is a tuple, comprising the server's IP address or hostname, and port number
+cli_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 srv_addr = (sys.argv[1], int(sys.argv[2]))
 
 try:
@@ -66,3 +66,16 @@ try:
 except socket.gaierror:
     print('cant reach address specified')
     exit(1)
+
+request_type = sys.argv[3]
+if request_type == 'list':
+    request = list_request()
+    cli_sock.sendall(request)
+elif request_type == 'get':
+    path = sys.argv[4]
+    request = get_request(path)
+    cli_sock.sendall(request)
+elif request_type == 'put':
+    path = sys.argv[4]
+    request = put_request(path)
+    cli_sock.sendall(request)
