@@ -1,19 +1,27 @@
 import socket
 import sys
+from utils import RequestType
 
 
-def get_request(filename):
+def put_request(filename):
+    request_type = RequestType.PUT.value
+
     name_packet = fill_string_packet(filename, max_size_bytes=1020)
+
     payload = get_payload(filename)
-    size = len(name_packet) + len(filename)
+
+    size = 40 + len(request_type) + len(name_packet) + len(payload)
     try:
         size = size.to_bytes(40)
     except OverflowError:
         print('max packet size is ~136GB')
 
+    packet = size + request_type + name_packet + payload
+    return packet
+
 
 def fill_string_packet(string, max_size_bytes):
-    return string.encode() + bytearray(max_size_bytes - len(string.encode()))
+    return string.encode() + bytes(max_size_bytes - len(string.encode()))
 
 
 def get_payload(filename):
