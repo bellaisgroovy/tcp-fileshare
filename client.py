@@ -1,6 +1,6 @@
 import socket
 import sys
-from utils import RequestType
+from utils import RequestType, put_request, fill_string_packet, get_payload
 
 
 def receive_put_packet(socket):
@@ -37,17 +37,7 @@ def determine_request_type(request_bytes):
         return RequestType.LIST
 
 
-def put_request(filename):
-    request_type = RequestType.PUT.value
 
-    name_size_bytes = len(filename).to_bytes(2, 'big')
-    name_packet = fill_string_packet(filename, max_size_bytes=1020)
-
-    payload = get_payload(filename)
-    payload_size_bytes = len(payload).to_bytes(40, 'big')  # TODO validation
-
-    packet = request_type + name_size_bytes + name_packet + payload_size_bytes + payload
-    return packet
 
 
 def get_request(filename):
@@ -76,14 +66,6 @@ def list_request():
 
     packet = size + request_type
     return packet
-
-
-def fill_string_packet(string, max_size_bytes):
-    return string.encode() + bytes(max_size_bytes - len(string.encode()))
-
-
-def get_payload(filename):
-    return open(filename, 'rb').read()
 
 
 # main
