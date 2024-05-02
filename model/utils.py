@@ -38,4 +38,4 @@ def fill_string_packet(string, max_size_bytes):
 
 import os
 def get_payload(filename):
-    return open(os.path.join('server_dir',filename), 'rb').read()
+    return open(os.path.join('../server_data', filename), 'rb').read()
