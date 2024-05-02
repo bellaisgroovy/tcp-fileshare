@@ -119,7 +119,7 @@ def download_file(path, max_bytes, socket):
 def recv_file_bytes(max_bytes, socket):
     size_bytes = get_int_from_socket(max_bytes, socket)
 
-    data = bytes(0)
+    data = bytes(1)
     bytes_read = 0
     file_bytes = bytes(0)
 
