@@ -1,6 +1,6 @@
 import socket
 import sys
-from model.utils import RequestType, put_request, fill_string_packet
+from mk1.utils import RequestType, put_request, fill_string_packet
 import os
 
 

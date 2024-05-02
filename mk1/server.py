@@ -1,6 +1,6 @@
 import socket
 import sys
-from model.utils import RequestType, put_request
+from mk1.utils import RequestType, put_request
 
 srv_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 srv_sock.bind(("0.0.0.0", int(sys.argv[1])))  # TODO error handling
