@@ -33,7 +33,6 @@ class RequestType(Enum):
 def get_int_from_socket(no_bytes, socket):
     try:
         num_bytes = socket.recv(no_bytes)
-        print('num_bytes', num_bytes)
         num_int = int.from_bytes(num_bytes, 'big')
     except Exception as e:
         print('could not convert data to int')
@@ -70,9 +69,6 @@ def send_file(socket, path):
 def get_file_packet(path, max_len_bytes):
     file_bytes = get_file_bytes(path)
     len_bytes = get_len_bytes(file_bytes, max_len_bytes)
-    x = 69 # TODO remove
-    len_bytes = x.to_bytes(40, 'big')
-    print('len_bytes', len_bytes)
     packet = len_bytes + file_bytes
     return packet
 
@@ -119,14 +115,11 @@ def create_filled_string_packet(string, max_bytes, max_len_bytes=2):
 
 def download_file(path, len_max_bytes, socket):
     file_bytes = recv_file_bytes(len_max_bytes, socket)
-    print('file_bytes : ',file_bytes)
     bytes_to_file(path, file_bytes)
 
 
 def recv_file_bytes(max_bytes, socket):
-    print('max_bytes  ',max_bytes)
     size_bytes = get_int_from_socket(max_bytes, socket)
-    print('size_bytes :', size_bytes)
     data = bytes(1)
     bytes_read = 0
     file_bytes = bytes(0)

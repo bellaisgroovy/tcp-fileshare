@@ -66,7 +66,6 @@ def request_put(socket):
     packet = create_put_request(filename, path)
 
     socket.sendall(packet)
-    print('packet sent : ', packet)
     print(f'sent {filename}')
 
 
@@ -76,7 +75,6 @@ def create_put_request(filename, path):
     name_packet = create_filled_string_packet(filename, max_bytes=1020, max_len_bytes=2)
 
     file_packet = get_file_packet(path, max_len_bytes=40)
-    print('file_packet : ', file_packet)
     packet = request_type + name_packet + file_packet
     return packet
 
