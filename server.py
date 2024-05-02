@@ -18,6 +18,8 @@ def main():  # called at bottom of file
 
         if request_type == RequestType.GET:
             serve_get(cli_sock)
+        elif request_type == RequestType.PUT:
+            serve_put(cli_sock)
 
 
 def create_socket(port):
@@ -47,9 +49,14 @@ def get_request_type(socket):
 
 def serve_get(socket):
     filename = get_filename(socket)
-    print('filename : ', filename)
     path = filename_to_path(filename, HOME_DIR)
     send_file(socket, path)
+
+
+def serve_put(socket):
+    filename = get_filename(socket)
+    path = filename_to_path(filename, HOME_DIR)
+    download_file(path, len_max_bytes=40, socket=socket)
 
 
 main()

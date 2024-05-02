@@ -33,6 +33,7 @@ class RequestType(Enum):
 def get_int_from_socket(no_bytes, socket):
     try:
         num_bytes = socket.recv(no_bytes)
+        print('num_bytes', num_bytes)
         num_int = int.from_bytes(num_bytes, 'big')
     except Exception as e:
         print('could not convert data to int')
@@ -55,18 +56,23 @@ def get_filename(socket):
     filename_bytes = socket.recv(filename_len)
     filename = filename_bytes.decode('utf-8')
 
+    socket.recv(1020-filename_len) # absorb the filler
+
     return filename
 
 
 def send_file(socket, path):
-    packet = get_file_packet(path, max_bytes=40)
+    packet = get_file_packet(path, max_len_bytes=40)
 
     socket.sendall(packet)
 
 
-def get_file_packet(path, max_bytes):
+def get_file_packet(path, max_len_bytes):
     file_bytes = get_file_bytes(path)
-    len_bytes = get_len_bytes(file_bytes, max_bytes)
+    len_bytes = get_len_bytes(file_bytes, max_len_bytes)
+    x = 69 # TODO remove
+    len_bytes = x.to_bytes(40, 'big')
+    print('len_bytes', len_bytes)
     packet = len_bytes + file_bytes
     return packet
 
@@ -92,7 +98,7 @@ def filename_to_path(filename, home_dir):
     return os.path.join(home_dir, filename)
 
 
-def create_string_packet(string, max_bytes):
+def create_filled_string_packet(string, max_bytes, max_len_bytes=2):
     try:
         string_bytes = string.encode()
     except Exception:
@@ -105,20 +111,22 @@ def create_string_packet(string, max_bytes):
         print('string too long for packet')
         exit(1)
 
-    str_len_bytes = len(string_bytes).to_bytes(2, 'big')
+    str_len_bytes = len(string_bytes).to_bytes(max_len_bytes, 'big')
 
     packet = str_len_bytes + string_bytes + filler
     return packet
 
 
-def download_file(path, max_bytes, socket):
-    file_bytes = recv_file_bytes(max_bytes, socket)
+def download_file(path, len_max_bytes, socket):
+    file_bytes = recv_file_bytes(len_max_bytes, socket)
+    print('file_bytes : ',file_bytes)
     bytes_to_file(path, file_bytes)
 
 
 def recv_file_bytes(max_bytes, socket):
+    print('max_bytes  ',max_bytes)
     size_bytes = get_int_from_socket(max_bytes, socket)
-
+    print('size_bytes :', size_bytes)
     data = bytes(1)
     bytes_read = 0
     file_bytes = bytes(0)
