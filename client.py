@@ -5,26 +5,24 @@ import os
 
 
 def receive_put_packet(socket):
-    meta_data = socket.recv(516)  # 516 bytes of metadata for all messages (sent to client)
+    request_type = socket.recv(1)  # TODO error handling
 
-    size = int.from_bytes(meta_data[:40], 'big')
-    request_type = determine_request_type(meta_data[40])
-    filename = meta_data[41:].decode('utf-8')
+    filename_len = int.from_bytes(cli_sock.recv(2), byteorder='big')
+    print(filename_len)
+    filename = cli_sock.recv(filename_len).decode('utf-8')
+    cli_sock.recv(1020 - filename_len)  # empty bits
 
+    payload_size_bytes = int.from_bytes(cli_sock.recv(5), 'big')
     payload = bytes(0)
     data = bytes(1)
     bytes_read = 0
-    while bytes_read < size - len(meta_data):
+    while len(data) != 0 and bytes_read < payload_size_bytes:
         data = socket.recv(4096)
 
         payload += data
         bytes_read += len(data)
-    packet = {
-        'size': size,
-        'request_type': request_type,
-        'filename': filename,
-        'payload': payload
-    }
+
+
 
     return packet
 

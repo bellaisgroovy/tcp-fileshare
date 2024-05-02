@@ -14,6 +14,7 @@ while True:
     if request_type == RequestType.GET:
         # get filename
         filename_len = int.from_bytes(cli_sock.recv(2), byteorder='big')
+        print(filename_len)
         filename = cli_sock.recv(filename_len).decode('utf-8')
         cli_sock.recv(1020-filename_len)  # empty bits
 
