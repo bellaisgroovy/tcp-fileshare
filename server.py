@@ -20,6 +20,8 @@ def main():  # called at bottom of file
             serve_get(cli_sock)
         elif request_type == RequestType.PUT:
             serve_put(cli_sock)
+        elif request_type == RequestType.LIST:
+            serve_list(cli_sock)
 
 
 def create_socket(port):
@@ -59,4 +61,30 @@ def serve_put(socket):
     download_file(path, len_max_bytes=40, socket=socket)
 
 
+def serve_list(socket):
+    packet = get_dir_list_packet()
+
+    socket.sendall(packet)
+
+
+def get_dir_list_packet():
+    dir_list_bytes = get_dir_list_bytes()
+
+    len_bytes = len(dir_list_bytes).to_bytes(40, 'big')
+
+    packet = len_bytes + dir_list_bytes
+
+    return packet
+
+
+def get_dir_list_bytes():
+    dir_list = os.listdir(HOME_DIR)
+    dir_list_str = ''
+
+    for file in dir_list:
+        dir_list_str += file + '\n'
+
+    dir_list_bytes = dir_list_str.encode()
+
+    return dir_list_bytes
 main()

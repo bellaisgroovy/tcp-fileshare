@@ -14,6 +14,8 @@ def main():  # called at bottom of file
         request_get(cli_sock)
     elif request_type == RequestType.PUT:
         request_put(cli_sock)
+    elif request_type == RequestType.LIST:
+        request_list(cli_sock)
 
 
 def create_socket():
@@ -77,6 +79,19 @@ def create_put_request(filename, path):
     file_packet = get_file_packet(path, max_len_bytes=40)
     packet = request_type + name_packet + file_packet
     return packet
+
+
+def request_list(socket):
+    packet = RequestType.LIST.value
+    socket.sendall(packet)
+    print("success")
+    receive_list(socket)
+
+
+def receive_list(socket):
+    list_bytes = recv_file_bytes(max_bytes=40, socket=socket)
+    list_str = list_bytes.decode('utf-8')
+    print(list_str)
 
 
 main()
