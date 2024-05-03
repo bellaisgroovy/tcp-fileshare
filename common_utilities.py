@@ -51,7 +51,10 @@ def get_filename(socket):
 
 def send_file(socket, path):
     file_bytes = get_file_bytes(path)
-    packet = pack(len_size_bytes=40, data=file_bytes)
+    try:
+        packet = pack(len_size_bytes=40, data=file_bytes)
+    except OverflowError:
+        raise OverflowError('file must be under ~136 GB')
 
     socket.sendall(packet)
 
