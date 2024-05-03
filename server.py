@@ -12,7 +12,7 @@ def main():  # called at bottom of file
     while True:  # run until error
         cli_sock, cli_addr = srv_sock.accept()
 
-        print(cli_sock, cli_addr, end=' ')
+        print(cli_addr, end=' ')
 
         request_type = get_request_type(cli_sock)
 
@@ -22,6 +22,7 @@ def main():  # called at bottom of file
             serve_put(cli_sock)
         elif request_type == RequestType.LIST:
             serve_list(cli_sock)
+        print('success')  # only reached if no errors
 
 
 def create_socket(port):
@@ -53,18 +54,21 @@ def serve_get(socket):
     filename = get_filename(socket)
     path = filename_to_path(filename, HOME_DIR)
     send_file(socket, path)
+    print('get', end=' ')
 
 
 def serve_put(socket):
     filename = get_filename(socket)
     path = filename_to_path(filename, HOME_DIR)
     download_file(path, len_max_bytes=40, socket=socket)
+    print('put', end=' ')
 
 
 def serve_list(socket):
     packet = get_dir_list_packet()
 
     socket.sendall(packet)
+    print('list', end=' ')
 
 
 def get_dir_list_packet():
