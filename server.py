@@ -1,4 +1,12 @@
-import os
+"""
+usage:
+$ python server.py port
+
+creates server at localhost port which client.py can make requests to.
+
+eg:
+$ python server.py 6000
+"""
 import socket as sock_lib
 import sys
 from common_utilities import *

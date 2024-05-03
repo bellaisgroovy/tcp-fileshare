@@ -1,3 +1,15 @@
+"""
+usage:
+$ python client.py hostname port request (conditional)filename
+
+will only work if server at hostname port exists
+
+eg:
+$ python server.py localhost 6000 list
+$ python server.py localhost 6000 get cloud.txt
+$ python server.py localhost 6000 put ground.txt
+"""
+
 import socket as sock_lib
 import sys
 from common_utilities import *
