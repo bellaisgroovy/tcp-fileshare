@@ -94,30 +94,12 @@ def filename_to_path(filename, home_dir):
 
 def pack(len_size_bytes, data):
     """
+    creates packet of data with preceding length value.
     len_size_bytes = the number of bytes used to represent the length of data.
     data is in bytes.
     """
     len_data_bytes = len(data).to_bytes(len_size_bytes, 'big')  # length of data in bytes
     packet = len_data_bytes + data
-    return packet
-
-
-def create_filled_string_packet(string, max_bytes, max_len_bytes=2):
-    try:
-        string_bytes = string.encode()
-    except Exception:
-        print('could not convert string to bytes')
-        exit(1)
-
-    try:
-        filler = bytes(max_bytes - len(string_bytes))
-    except ValueError:
-        print('string too long for packet')
-        exit(1)
-
-    str_len_bytes = len(string_bytes).to_bytes(max_len_bytes, 'big')
-
-    packet = str_len_bytes + string_bytes + filler
     return packet
 
 
