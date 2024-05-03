@@ -53,7 +53,7 @@ def request_get(socket):
 def create_get_request(filename):
     request_type = RequestType.GET.value
 
-    name_packet = create_filled_string_packet(filename, max_bytes=1020, max_len_bytes=2)
+    name_packet = pack(len_size_bytes=2, data=filename.encode())
 
     packet = request_type + name_packet
     return packet
@@ -74,7 +74,7 @@ def request_put(socket):
 def create_put_request(filename, path):
     request_type = RequestType.PUT.value
 
-    name_packet = create_filled_string_packet(filename, max_bytes=1020, max_len_bytes=2)
+    name_packet = pack(len_size_bytes=2, data=filename.encode())
 
     file_packet = get_file_packet(path, max_len_bytes=40)
     packet = request_type + name_packet + file_packet

@@ -55,8 +55,6 @@ def get_filename(socket):
     filename_bytes = socket.recv(filename_len)
     filename = filename_bytes.decode('utf-8')
 
-    socket.recv(1020-filename_len) # absorb the filler
-
     return filename
 
 
@@ -92,6 +90,16 @@ def get_len_bytes(data, max_bytes):
 
 def filename_to_path(filename, home_dir):
     return os.path.join(home_dir, filename)
+
+
+def pack(len_size_bytes, data):
+    """
+    len_size_bytes = the number of bytes used to represent the length of data.
+    data is in bytes.
+    """
+    len_data_bytes = len(data).to_bytes(len_size_bytes, 'big')  # length of data in bytes
+    packet = len_data_bytes + data
+    return packet
 
 
 def create_filled_string_packet(string, max_bytes, max_len_bytes=2):
