@@ -146,7 +146,7 @@ def receive_list(socket):
     list_bytes = big_recv(len_size_bytes=40, socket=socket)
     list_str = list_bytes.decode('utf-8')
     print()
-    print(list_str)  # no extra message cause the list is the message
+    print(list_str, end='')  # no extra message cause the list is the message
 
 
 main()
