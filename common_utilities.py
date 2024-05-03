@@ -133,7 +133,7 @@ def get_confirmation(socket, success_msg):
     error_bytes = socket.recv(1)
     error_code = ErrorCode.determine_error_code_from_bytes(error_bytes)
     if error_code == ErrorCode.OVERWRITE:
-        raise FileExistsError('file already exists on server')
+        raise FileExistsError('file already exists on other end')
     elif error_code == ErrorCode.FAILURE:
         raise Exception('failure')
     elif error_code == ErrorCode.SUCCESS:

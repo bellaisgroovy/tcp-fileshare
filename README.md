@@ -116,6 +116,7 @@ First the put request is created and sent by the client:
     - 40 bytes
  - file
    - any binary encoding
+   - 
    - between 0 and 2^40 bytes
 
 That is then received by the server and a confirmation or error is sent:
