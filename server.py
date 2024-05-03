@@ -30,7 +30,6 @@ def main():  # called at bottom of file
             elif request_type == RequestType.LIST:
                 serve_list(cli_sock)
 
-
             print('success')  # only reached if no errors
         except FileExistsError as error:
             print(error)
@@ -58,6 +57,7 @@ def get_port():
     except ValueError:
         raise ValueError('port must be a number')
     return port
+
 
 def get_request_type(socket):
     request_bytes = socket.recv(1)
