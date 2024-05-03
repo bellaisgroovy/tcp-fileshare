@@ -97,14 +97,15 @@ def request_get(socket):
 
     socket.sendall(packet)
 
-    download_file(path, len_size_bytes=40, socket=socket)
+    download_file(path, len_size_bytes=MAX_FILE_LEN_SIZE_BYTES
+                  , socket=socket)
     print(f'success downloaded {filename}')  # you know if a get request has worked, you have the file!
 
 
 def create_get_request(filename):
     request_type = RequestType.GET.value
 
-    name_packet = pack(len_size_bytes=2, data=filename.encode())
+    name_packet = pack(len_size_bytes=MAX_FILENAME_LEN_SIZE_BYTES, data=filename.encode())
 
     packet = request_type + name_packet
     return packet
@@ -134,10 +135,10 @@ def get_filename():
 def create_put_request(filename, path):
     request_type = RequestType.PUT.value
 
-    name_packet = pack(len_size_bytes=2, data=filename.encode())
+    name_packet = pack(len_size_bytes=MAX_FILENAME_LEN_SIZE_BYTES, data=filename.encode())
 
     file_bytes = get_file_bytes(path)
-    file_packet = pack(len_size_bytes=40, data=file_bytes)
+    file_packet = pack(len_size_bytes=MAX_FILE_LEN_SIZE_BYTES, data=file_bytes)
 
     packet = request_type + name_packet + file_packet
     return packet
@@ -153,7 +154,7 @@ def request_list(socket):
 
 
 def receive_list(socket):
-    list_bytes = big_recv(len_size_bytes=40, socket=socket)
+    list_bytes = big_recv(len_size_bytes=MAX_FILE_LEN_SIZE_BYTES, socket=socket)
     list_str = list_bytes.decode('utf-8')
     print()
     print(list_str, end='')  # no extra message cause the list is the message

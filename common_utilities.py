@@ -1,15 +1,17 @@
 import os
 from enum import Enum
 
-zero = 0
-one = 1
-two = 2
+ZERO = 0
+ONE = 1
+TWO = 2
+MAX_FILE_LEN_SIZE_BYTES = 40
+MAX_FILENAME_LEN_SIZE_BYTES = 2
 
 
 class RequestType(Enum):
-    PUT = zero.to_bytes(1, 'big')
-    GET = one.to_bytes(1, 'big')
-    LIST = two.to_bytes(1, 'big')
+    PUT = ZERO.to_bytes(1, 'big')
+    GET = ONE.to_bytes(1, 'big')
+    LIST = TWO.to_bytes(1, 'big')
 
     @staticmethod
     def determine_request_type_from_bytes(request_bytes):
@@ -113,9 +115,9 @@ def bytes_to_file(path, file_bytes):
 
 
 class ErrorCode(Enum):
-    SUCCESS = zero.to_bytes(1, 'big')
-    OVERWRITE = one.to_bytes(1, 'big')
-    FAILURE = two.to_bytes(1, 'big')
+    SUCCESS = ZERO.to_bytes(1, 'big')
+    OVERWRITE = ONE.to_bytes(1, 'big')
+    FAILURE = TWO.to_bytes(1, 'big')
 
     @staticmethod
     def determine_error_code_from_bytes(error_bytes):

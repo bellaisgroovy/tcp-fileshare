@@ -86,13 +86,15 @@ def serve_put(socket):
     print('put', end=' ')
     filename = get_filename(socket)
     path = filename_to_path(filename, HOME_DIR)
-    download_file(path, len_size_bytes=40, socket=socket)
+    download_file(path, len_size_bytes=MAX_FILE_LEN_SIZE_BYTES, socket=socket)
 
 
 def serve_list(socket):
     print('list', end=' ')
 
     packet = get_dir_list_packet()
+    dir_list_bytes = get_dir_list_bytes()
+    packet = pack(len_size_bytes=MAX_FILE_LEN_SIZE_BYTES, data=dir_list_bytes)
 
     socket.sendall(packet)
 
