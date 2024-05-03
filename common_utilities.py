@@ -126,10 +126,9 @@ def recv_file_bytes(max_bytes, socket):
 
 def bytes_to_file(path, file_bytes):
     try:
-        file = open(path, 'wb')
+
+        with open(path, 'wb') as file:
+            file.write(file_bytes)
     except Exception:
         print(f'could not create file at {path}')
         exit(1)
-
-    file.write(file_bytes)
-    file.close()
