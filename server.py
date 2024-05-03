@@ -24,7 +24,7 @@ def main():  # called at bottom of file
             elif request_type == RequestType.LIST:
                 serve_list(cli_sock)
             print('success')  # only reached if no errors
-        except Exception as error:  # catch all just in case
+        except Exception as error:  # don't exit on errors, other requests will still work
             print(error)
 
 
@@ -46,24 +46,25 @@ def get_request_type(socket):
 
 
 def serve_get(socket):
+    print('get', end=' ')
     filename = get_filename(socket)
     path = filename_to_path(filename, HOME_DIR)
     send_file(socket, path)
-    print('get', end=' ')
 
 
 def serve_put(socket):
+    print('put', end=' ')
     filename = get_filename(socket)
     path = filename_to_path(filename, HOME_DIR)
-    download_file(path, len_max_bytes=40, socket=socket)
-    print('put', end=' ')
+    download_file(path, len_size_bytes=40, socket=socket)
 
 
 def serve_list(socket):
+    print('list', end=' ')
+
     packet = get_dir_list_packet()
 
     socket.sendall(packet)
-    print('list', end=' ')
 
 
 def get_dir_list_packet():

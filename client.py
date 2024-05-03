@@ -17,24 +17,24 @@ def main():  # called at bottom of file
             request_put(cli_sock)
         elif request_type == RequestType.LIST:
             request_list(cli_sock)
-    except Exception as error:  # catch all just in case
+    except Exception as error:
         print(error)
         exit(1)
 
 
 def create_socket():
     cli_sock = sock_lib.socket(sock_lib.AF_INET, sock_lib.SOCK_STREAM)
+
     srv_addr = (sys.argv[1], int(sys.argv[2]))
 
-    print(str(srv_addr), end=' ')
+    print(srv_addr, end=' ')
 
     try:
         cli_sock.connect(srv_addr)
     except sock_lib.gaierror:
-        print('cant reach address')
-        exit(1)
+        print(f'cant reach {srv_addr}')
     except ConnectionRefusedError:
-        print('server refused connection')
+        print(f'{srv_addr} refused connection')
         exit(1)
 
     return cli_sock
@@ -50,8 +50,8 @@ def request_get(socket):
 
     socket.sendall(packet)
 
-    download_file(path, len_max_bytes=40, socket=socket)
-    print(f'downloaded {filename}')
+    download_file(path, len_size_bytes=40, socket=socket)
+    print(f'success downloaded {filename}')
 
 
 def create_get_request(filename):
@@ -72,7 +72,7 @@ def request_put(socket):
     packet = create_put_request(filename, path)
 
     socket.sendall(packet)
-    print(f'sent {filename}')
+    print(f'success sent {filename}')
 
 
 def create_put_request(filename, path):
@@ -93,7 +93,7 @@ def request_list(socket):
 
 
 def receive_list(socket):
-    list_bytes = recv_file_bytes(max_bytes=40, socket=socket)
+    list_bytes = big_recv(len_size_bytes=40, socket=socket)
     list_str = list_bytes.decode('utf-8')
     print(list_str)
 

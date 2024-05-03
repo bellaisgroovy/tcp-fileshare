@@ -90,25 +90,30 @@ def pack(len_size_bytes, data):
     return packet
 
 
-def download_file(path, len_max_bytes, socket):
-    file_bytes = recv_file_bytes(len_max_bytes, socket)
+def download_file(path, len_size_bytes, socket):
+    file_bytes = big_recv(len_size_bytes, socket)
     bytes_to_file(path, file_bytes)
 
 
-def recv_file_bytes(max_bytes, socket):
-    size_bytes = get_int_from_socket(max_bytes, socket)
+def big_recv(len_size_bytes, socket):
+    socket.settimeout(10)  # if recv takes over 10 seconds it will time out
+
+    size_bytes = int.from_bytes(socket.recv(len_size_bytes), 'big')
+
     data = bytes(1)
     bytes_read = 0
-    file_bytes = bytes(0)
+    big_data = bytes(0)
 
-    while len(data) > 0 and bytes_read < size_bytes:  # while connection is open and full file isnt read
+    while len(data) > 0 and bytes_read < size_bytes:  # while connection is open and full file isn't read
         data = socket.recv(4096)
 
-        file_bytes += data
+        big_data += data
 
         bytes_read += len(data)
+    if len(data) > 0:
+        raise ConnectionAbortedError(f'Connection was closed by {socket.getsockname()}')
 
-    return file_bytes
+    return big_data
 
 
 def bytes_to_file(path, file_bytes):
