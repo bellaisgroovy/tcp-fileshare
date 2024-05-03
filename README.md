@@ -1,6 +1,7 @@
 # Report
 
 Name : Bellatrix Hodgson
+
 Matriculation Number : 2770706H
 
 I have created a fully functional application protocol for exchanging files between a host and a client.
@@ -52,10 +53,10 @@ For request type there is 1 byte:
  - get = 0x01
  - list = 0x02
 
-For error codes there is byte:
+For error codes there is 1 byte:
  - success = 0x00
- - overwrite failure = 0x00
- - generic failure = 0x00
+ - overwrite failure = 0x01
+ - generic failure = 0x02
 
 #### List
 
@@ -102,7 +103,7 @@ That is then received by the client and a confirmation or error is sent:
 #### Put
 
 First the put request is created and sent by the client:
- - request type (get)
+ - request type (put)
    - 1 byte
  - filename length
    - integer
