@@ -50,14 +50,14 @@ def get_filename(socket):
 
 
 def send_file(socket, path):
-    packet = get_file_packet(path, max_len_bytes=40)
+    packet = get_file_packet(path, len_size_bytes=40)
 
     socket.sendall(packet)
 
 
-def get_file_packet(path, max_len_bytes):
+def get_file_packet(path, len_size_bytes):
     file_bytes = get_file_bytes(path)
-    len_bytes = get_len_bytes(file_bytes, max_len_bytes)
+    len_bytes = get_len_bytes(file_bytes, len_size_bytes)
     packet = len_bytes + file_bytes
     return packet
 
@@ -96,6 +96,7 @@ def download_file(path, len_size_bytes, socket):
 
 
 def big_recv(len_size_bytes, socket):
+    old_time_out = socket.gettimeout()
     socket.settimeout(10)  # if recv takes over 10 seconds it will time out
 
     size_bytes = int.from_bytes(socket.recv(len_size_bytes), 'big')
@@ -110,9 +111,10 @@ def big_recv(len_size_bytes, socket):
         big_data += data
 
         bytes_read += len(data)
-    if len(data) > 0:
+    if len(data) == 0:
         raise ConnectionAbortedError(f'Connection was closed by {socket.getsockname()}')
 
+    socket.settimeout(old_time_out)  # reset timeout to normal
     return big_data
 
 

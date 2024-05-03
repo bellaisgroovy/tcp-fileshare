@@ -32,9 +32,9 @@ def create_socket():
     try:
         cli_sock.connect(srv_addr)
     except sock_lib.gaierror:
-        print(f'cant reach {srv_addr}')
+        print(f'cant be reached, check hostname is correct')
     except ConnectionRefusedError:
-        print(f'{srv_addr} refused connection')
+        print(f'refused connection, check port is correct')
         exit(1)
 
     return cli_sock
@@ -80,10 +80,11 @@ def create_put_request(filename, path):
 
     name_packet = pack(len_size_bytes=2, data=filename.encode())
 
-    file_packet = get_file_packet(path, max_len_bytes=40)
+    file_packet = get_file_packet(path, len_size_bytes=40)
     packet = request_type + name_packet + file_packet
     return packet
 
+# LIST request
 
 def request_list(socket):
     packet = RequestType.LIST.value
