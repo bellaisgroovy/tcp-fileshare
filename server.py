@@ -7,7 +7,12 @@ HOME_DIR = 'server_data'
 
 
 def main():  # called at bottom of file
-    srv_sock = create_socket(port=int(sys.argv[1]))
+    try:
+        port = get_port()
+        srv_sock = create_socket(port=port)
+    except Exception as e:
+        print(e)
+        exit(1)
 
     while True:  # run until error
         try:
@@ -37,6 +42,15 @@ def create_socket(port):
 
     return srv_sock
 
+
+def get_port():
+    try:
+        port = int(sys.argv[1])
+    except IndexError:
+        raise IndexError('a port number must be supplied')
+    except ValueError:
+        raise ValueError('port must be a number')
+    return port
 
 def get_request_type(socket):
     request_bytes = socket.recv(1)

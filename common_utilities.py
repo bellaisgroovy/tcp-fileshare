@@ -119,5 +119,22 @@ def big_recv(len_size_bytes, socket):
 
 
 def bytes_to_file(path, file_bytes):
+    if os.path.exists(path):
+        raise FileExistsError(f'will not overwrite {path}')
     with open(path, 'wb') as file:
         file.write(file_bytes)
+
+
+class ErrorCode(Enum):
+    SUCCESS = zero.to_bytes(1, 'big')
+    OVERWRITE = one.to_bytes(1, 'big')
+    FAILURE = two.to_bytes(1, 'big')
+
+    @staticmethod
+    def determine_error_code_from_bytes(error_bytes):
+        if error_bytes == ErrorCode.SUCCESS.value:
+            return ErrorCode.SUCCESS
+        elif error_bytes == ErrorCode.OVERWRITE.value:
+            return ErrorCode.OVERWRITE
+        elif error_bytes == ErrorCode.FAILURE.value:
+            return ErrorCode.FAILURE
