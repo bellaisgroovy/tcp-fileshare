@@ -31,23 +31,14 @@ class RequestType(Enum):
 
 
 def get_int_from_socket(no_bytes, socket):
-    try:
-        num_bytes = socket.recv(no_bytes)
-        num_int = int.from_bytes(num_bytes, 'big')
-    except Exception as e:
-        print('could not convert data to int')
-        exit(1)
+    num_bytes = socket.recv(no_bytes)
+    num_int = int.from_bytes(num_bytes, 'big')
     return num_int
 
 
 def get_str_from_socket(no_bytes, socket):
-    try:
-        filename_bytes = socket.recv(no_bytes)
-        filename = filename_bytes.decode('utf-8')
-    except Exception as e:
-        print('could not convert data to string')
-        exit(1)
-    return filename
+    filename_bytes = socket.recv(no_bytes)
+    filename = filename_bytes.decode('utf-8')
 
 
 def get_filename(socket):
@@ -72,12 +63,8 @@ def get_file_packet(path, max_len_bytes):
 
 
 def get_file_bytes(path):
-    try:
-        with open(path, 'rb') as file:
-            file_bytes = file.read()
-    except FileNotFoundError:
-        print(f'{path} does not exist.')
-        exit(1)
+    with open(path, 'rb') as file:
+        file_bytes = file.read()
 
     return file_bytes
 
@@ -125,10 +112,5 @@ def recv_file_bytes(max_bytes, socket):
 
 
 def bytes_to_file(path, file_bytes):
-    try:
-
-        with open(path, 'wb') as file:
-            file.write(file_bytes)
-    except Exception:
-        print(f'could not create file at {path}')
-        exit(1)
+    with open(path, 'wb') as file:
+        file.write(file_bytes)

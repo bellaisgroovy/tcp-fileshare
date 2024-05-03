@@ -6,16 +6,20 @@ HOME_DIR = 'client_data'
 
 
 def main():  # called at bottom of file
-    cli_sock = create_socket()
+    try:
+        cli_sock = create_socket()
 
-    request_type = RequestType.determine_request_type_from_string(request_str=sys.argv[3])
+        request_type = RequestType.determine_request_type_from_string(request_str=sys.argv[3])
 
-    if request_type == RequestType.GET:
-        request_get(cli_sock)
-    elif request_type == RequestType.PUT:
-        request_put(cli_sock)
-    elif request_type == RequestType.LIST:
-        request_list(cli_sock)
+        if request_type == RequestType.GET:
+            request_get(cli_sock)
+        elif request_type == RequestType.PUT:
+            request_put(cli_sock)
+        elif request_type == RequestType.LIST:
+            request_list(cli_sock)
+    except Exception as error:  # catch all just in case
+        print(error)
+        exit(1)
 
 
 def create_socket():
