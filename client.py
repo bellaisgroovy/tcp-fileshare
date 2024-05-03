@@ -126,7 +126,9 @@ def create_put_request(filename, path):
 
     name_packet = pack(len_size_bytes=2, data=filename.encode())
 
-    file_packet = get_file_packet(path, len_size_bytes=40)
+    file_bytes = get_file_bytes(path)
+    file_packet = pack(len_size_bytes=40, data=file_bytes)
+
     packet = request_type + name_packet + file_packet
     return packet
 

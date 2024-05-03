@@ -50,16 +50,10 @@ def get_filename(socket):
 
 
 def send_file(socket, path):
-    packet = get_file_packet(path, len_size_bytes=40)
+    file_bytes = get_file_bytes(path)
+    packet = pack(len_size_bytes=40, data=file_bytes)
 
     socket.sendall(packet)
-
-
-def get_file_packet(path, len_size_bytes):
-    file_bytes = get_file_bytes(path)
-    len_bytes = get_len_bytes(file_bytes, len_size_bytes)
-    packet = len_bytes + file_bytes
-    return packet
 
 
 def get_file_bytes(path):
@@ -67,12 +61,6 @@ def get_file_bytes(path):
         file_bytes = file.read()
 
     return file_bytes
-
-
-def get_len_bytes(data, max_bytes):
-    length = len(data)
-    len_bytes = length.to_bytes(max_bytes, 'big')
-    return len_bytes
 
 
 def filename_to_path(filename, home_dir):
