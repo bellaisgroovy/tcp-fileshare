@@ -26,11 +26,18 @@ def main():  # called at bottom of file
                 serve_get(cli_sock)
             elif request_type == RequestType.PUT:
                 serve_put(cli_sock)
+                cli_sock.sendall(ErrorCode.SUCCESS.value)  # other requests don't require confirmation
             elif request_type == RequestType.LIST:
                 serve_list(cli_sock)
+
+
             print('success')  # only reached if no errors
+        except FileExistsError as error:
+            print(error)
+            cli_sock.sendall(ErrorCode.OVERWRITE.value)
         except Exception as error:  # don't exit on errors, other requests will still work
             print(error)
+            cli_sock.sendall(ErrorCode.FAILURE.value)
 
 
 def create_socket(port):

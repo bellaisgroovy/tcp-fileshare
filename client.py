@@ -23,6 +23,17 @@ def main():  # called at bottom of file
         exit(1)
 
 
+def get_confirmation(socket, success_msg):
+    error_bytes = socket.recv(1)
+    error_code = ErrorCode.determine_error_code_from_bytes(error_bytes)
+    if error_code == ErrorCode.OVERWRITE:
+        raise FileExistsError('file already exists on server')
+    elif error_code == ErrorCode.FAILURE:
+        raise Exception('failure')
+    elif error_code == ErrorCode.SUCCESS:
+        print(success_msg)
+
+
 def get_request_str():
     try:
         request_str = sys.argv[3]
@@ -33,6 +44,7 @@ def get_request_str():
 
 def create_socket():
     cli_sock = sock_lib.socket(sock_lib.AF_INET, sock_lib.SOCK_STREAM)
+    cli_sock.settimeout(10)  # socket will time out after 10 seconds
 
     srv_addr = get_srv_addr()
 
@@ -76,7 +88,7 @@ def request_get(socket):
     socket.sendall(packet)
 
     download_file(path, len_size_bytes=40, socket=socket)
-    print(f'success downloaded {filename}')
+    print(f'success downloaded {filename}')  # you know if a get request has worked, you have the file!
 
 
 def create_get_request(filename):
@@ -97,7 +109,7 @@ def request_put(socket):
     packet = create_put_request(filename, path)
 
     socket.sendall(packet)
-    print(f'success sent {filename}')
+    get_confirmation(socket, success_msg=f'success sent {filename}')  # has the file been uploaded?
 
 
 def get_filename():
@@ -124,14 +136,15 @@ def create_put_request(filename, path):
 def request_list(socket):
     packet = RequestType.LIST.value
     socket.sendall(packet)
-    print("success")
+
     receive_list(socket)
 
 
 def receive_list(socket):
     list_bytes = big_recv(len_size_bytes=40, socket=socket)
     list_str = list_bytes.decode('utf-8')
-    print(list_str)
+    print()
+    print(list_str)  # no extra message cause the list is the message
 
 
 main()

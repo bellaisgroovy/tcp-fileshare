@@ -96,9 +96,6 @@ def download_file(path, len_size_bytes, socket):
 
 
 def big_recv(len_size_bytes, socket):
-    old_time_out = socket.gettimeout()
-    socket.settimeout(10)  # if recv takes over 10 seconds it will time out
-
     size_bytes = int.from_bytes(socket.recv(len_size_bytes), 'big')
 
     data = bytes(1)
@@ -114,7 +111,6 @@ def big_recv(len_size_bytes, socket):
     if len(data) == 0:
         raise ConnectionAbortedError(f'Connection was closed by {socket.getsockname()}')
 
-    socket.settimeout(old_time_out)  # reset timeout to normal
     return big_data
 
 
