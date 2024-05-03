@@ -32,13 +32,14 @@ def main():  # called at bottom of file
 
             if request_type == RequestType.GET:
                 serve_get(cli_sock)
+                get_confirmation(cli_sock, 'success')
             elif request_type == RequestType.PUT:
                 serve_put(cli_sock)
                 cli_sock.sendall(ErrorCode.SUCCESS.value)  # other requests don't require confirmation
+                print('success')
             elif request_type == RequestType.LIST:
                 serve_list(cli_sock)
-
-            print('success')  # only reached if no errors
+                print('success')
         except FileExistsError as error:
             print(error)
             cli_sock.sendall(ErrorCode.OVERWRITE.value)

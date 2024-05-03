@@ -26,24 +26,21 @@ def main():  # called at bottom of file
 
         if request_type == RequestType.GET:
             request_get(cli_sock)
+            cli_sock.sendall(ErrorCode.SUCCESS.value)
         elif request_type == RequestType.PUT:
             request_put(cli_sock)
         elif request_type == RequestType.LIST:
             request_list(cli_sock)
+    except FileExistsError as error:
+        print(error)
+        cli_sock.sendall(ErrorCode.OVERWRITE.value)
     except Exception as error:
         print(error)
+        cli_sock.sendall(ErrorCode.FAILURE.value)
         exit(1)
 
 
-def get_confirmation(socket, success_msg):
-    error_bytes = socket.recv(1)
-    error_code = ErrorCode.determine_error_code_from_bytes(error_bytes)
-    if error_code == ErrorCode.OVERWRITE:
-        raise FileExistsError('file already exists on server')
-    elif error_code == ErrorCode.FAILURE:
-        raise Exception('failure')
-    elif error_code == ErrorCode.SUCCESS:
-        print(success_msg)
+
 
 
 def get_request_str():
