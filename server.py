@@ -39,7 +39,7 @@ def main():  # called at bottom of file
                 print('success')
             elif request_type == RequestType.LIST:
                 serve_list(cli_sock)
-                print('success')
+                get_confirmation(cli_sock, 'success')
         except FileExistsError as error:
             print(error)
             cli_sock.sendall(ErrorCode.OVERWRITE.value)

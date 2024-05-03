@@ -31,6 +31,7 @@ def main():  # called at bottom of file
             request_put(cli_sock)
         elif request_type == RequestType.LIST:
             request_list(cli_sock)
+            cli_sock.sendall(ErrorCode.SUCCESS.value)
     except FileExistsError as error:
         print(error)
         cli_sock.sendall(ErrorCode.OVERWRITE.value)
